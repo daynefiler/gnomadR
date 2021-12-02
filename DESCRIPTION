@@ -20,3 +20,5 @@ Imports:
 Suggests: 
     spelling
 Language: en-US
+URL: https://github.com/daynefiler/gnomadR
+BugReports: https://github.com/daynefiler/gnomadR/issues
