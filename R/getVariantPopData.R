@@ -21,7 +21,7 @@ getVariantPopData <- function(varids, genomes) {
   gmCon <- GraphqlClient$new(url = apiUrl())
   datasets <- getDatasets(genomes)
   qfmt <-
-    '
+  '
     {genomes}_{gsub("-", "_", varids)}:
     variant(variantId: "{varids}", dataset: {datasets}) {{
       variantId
@@ -38,7 +38,7 @@ getVariantPopData <- function(varids, genomes) {
       }}
     }}
   '
-  rsp <- .makeAndEvalQuery(qfmt)
+  rsp <- .makeAndEvalQuery(qfmt, environment())
   if (is(rsp, 'try-error')) return(rsp)
   resLst <- fromJSON(rsp, flatten = TRUE)$data
   procPopData <- function(x) {

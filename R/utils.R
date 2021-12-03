@@ -109,9 +109,9 @@ getLiftoverIdName <- function(genomes) {
 #' @importFrom glue glue glue_collapse
 #' @import ghql
 
-.makeAndEvalQuery <- function(qfmt, maxTries = 3) {
+.makeAndEvalQuery <- function(qfmt, genv, maxTries = 3) {
   gmCon <- GraphqlClient$new(url = apiUrl())
-  qryBody <- glue_collapse(glue(qfmt), sep = "\n")
+  qryBody <- glue_collapse(glue(qfmt, .envir = genv), sep = "\n")
   qry <- Query$new()$query('q', glue('query {{ {qryBody} }}'))
   tries <- 1
   repeat {
