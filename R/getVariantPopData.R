@@ -20,7 +20,7 @@ getVariantPopData <- function(varids, genomes) {
   stopifnot(validGenomes(genomes))
   gmCon <- GraphqlClient$new(url = apiUrl())
   datasets <- getDatasets(genomes)
-  tmp <-
+  qfmt <-
     '
     {genomes}_{gsub("-", "_", varids)}:
     variant(variantId: "{varids}", dataset: {datasets}) {{
@@ -38,15 +38,9 @@ getVariantPopData <- function(varids, genomes) {
       }}
     }}
   '
-  qryBody <- glue_collapse(glue(tmp), sep = "\n")
-  qry <- Query$new()$query('convertIds',
-                           glue('query convertIds {{ {qryBody} }}'))
-  tryres <- try(jsn <- gmCon$exec(qry$convertIds), silent = TRUE)
-  if (is(tryres, 'try-error')) {
-    warning(qfailmessage)
-    return(tryres)
-  }
-  resLst <- fromJSON(jsn, flatten = TRUE)$data
+  rsp <- .makeAndEvalQuery(qfmt)
+  if (is(rsp, 'try-error')) return(rsp)
+  resLst <- fromJSON(rsp, flatten = TRUE)$data
   procPopData <- function(x) {
     cbind(varid = x$variantId,
           chrom = x$chrom,

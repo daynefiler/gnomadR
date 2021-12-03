@@ -105,3 +105,21 @@ getLiftoverIdName <- function(genomes) {
   stopifnot(validGenomes(genomes))
   attr(ReferenceGenomeIds, "liftoverIdName")[match(genomes, ReferenceGenomeIds)]
 }
+
+#' @importFrom glue glue glue_collapse
+#' @import ghql
+
+.makeAndEvalQuery <- function(qfmt, maxTries = 3) {
+  gmCon <- GraphqlClient$new(url = apiUrl())
+  qryBody <- glue_collapse(glue(qfmt), sep = "\n")
+  qry <- Query$new()$query('q', glue('query {{ {qryBody} }}'))
+  tries <- 1
+  repeat {
+    if (tries > maxTries) break
+    tryres <- try(gmCon$exec(qry$q), silent = TRUE)
+    if (!is(tryres, 'try-error')) break
+    Sys.sleep(2*tries)
+    tries <- tries + 1
+  }
+  tryres
+}

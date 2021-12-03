@@ -11,17 +11,14 @@
 #' convertVariantIds(varids = '1-89388944-A-C', genomes = "GRCh37")
 #' }
 #'
-#' @import ghql
-#' @importFrom glue glue glue_collapse
 #' @importFrom jsonlite fromJSON
 #' @export
 
 convertVariantIds <- function(varids, genomes) {
   stopifnot(validGenomes(genomes))
-  gmCon <- GraphqlClient$new(url = apiUrl())
   datasets <- getDatasets(genomes)
   idnames <- getLiftoverIdName(genomes)
-  tmp <-
+  qfmt <-
   '
     {genomes}_{gsub("-", "_", varids)}:
     liftover({idnames}: "{varids}", reference_genome: {genomes}) {{
@@ -35,15 +32,9 @@ convertVariantIds <- function(varids, genomes) {
       }}
     }}
   '
-  qryBody <- glue_collapse(glue(tmp), sep = "\n")
-  qry <- Query$new()$query('convertIds',
-                           glue('query convertIds {{ {qryBody} }}'))
-  tryres <- try(jsn <- gmCon$exec(qry$convertIds), silent = TRUE)
-  if (is(tryres, 'try-error')) {
-    warning(qfailmessage)
-    return(tryres)
-  }
-  res <- fromJSON(jsn, flatten = TRUE)$data
+  rsp <- .makeAndEvalQuery(qfmt)
+  if (is(rsp, 'try-error')) return(rsp)
+  res <- fromJSON(rsp, flatten = TRUE)$data
   res
 }
 

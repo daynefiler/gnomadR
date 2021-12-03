@@ -22,7 +22,7 @@ getVariantsFromRegion <- function(genomes, chroms, starts, stops = starts) {
   stopifnot(validGenomes(genomes))
   gmCon <- GraphqlClient$new(url = apiUrl())
   datasets <- getDatasets(genomes)
-  tmp <-
+  qfmt <-
   '
     {genomes}_{chroms}_{starts}_{stops}:
     region(chrom: "{chroms}",
@@ -37,15 +37,9 @@ getVariantsFromRegion <- function(genomes, chroms, starts, stops = starts) {
       }}
     }}
   '
-  qryBody <- glue_collapse(glue(tmp), sep = "\n")
-  qry <- Query$new()$query('getRegion',
-                           glue('query getRegion {{ {qryBody} }}'))
-  tryres <- try(jsn <- gmCon$exec(qry$getRegion), silent = TRUE)
-  if (is(tryres, 'try-error')) {
-    warning(qfailmessage)
-    return(tryres)
-  }
-  res <- lapply(fromJSON(jsn)$data, "[[", 1)
+  rsp <- .makeAndEvalQuery(qfmt)
+  if (is(rsp, 'try-error')) return(rsp)
+  res <- lapply(fromJSON(rsp)$data, "[[", 1)
   res
 }
 
