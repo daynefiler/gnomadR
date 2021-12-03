@@ -41,7 +41,10 @@ getVariantsFromRegion <- function(genomes, chroms, starts, stops = starts) {
   qry <- Query$new()$query('getRegion',
                            glue('query getRegion {{ {qryBody} }}'))
   tryres <- try(jsn <- gmCon$exec(qry$getRegion), silent = TRUE)
-  if (is(tryres, 'try-error')) stop(qfailmessage)
+  if (is(tryres, 'try-error')) {
+    warning(qfailmessage)
+    return(tryres)
+  }
   res <- lapply(fromJSON(jsn)$data, "[[", 1)
   res
 }

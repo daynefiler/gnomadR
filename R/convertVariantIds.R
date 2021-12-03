@@ -39,7 +39,10 @@ convertVariantIds <- function(varids, genomes) {
   qry <- Query$new()$query('convertIds',
                            glue('query convertIds {{ {qryBody} }}'))
   tryres <- try(jsn <- gmCon$exec(qry$convertIds), silent = TRUE)
-  if (is(tryres, 'try-error')) stop(qfailmessage)
+  if (is(tryres, 'try-error')) {
+    warning(qfailmessage)
+    return(tryres)
+  }
   res <- fromJSON(jsn, flatten = TRUE)$data
   res
 }
