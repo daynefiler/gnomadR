@@ -1,0 +1,56 @@
+#' @title Get variant population data
+#' @inheritParams pkgParams
+#' @param genomes The genome(s) associated with the given variant_id
+#' @description
+#' Returns the variant_id(s) for the alternate reference genome
+#'
+#' @return List of population data for the given variant_id(s)
+#'
+#' @examples
+#' \dontrun{
+#' getVariantPopData(varids = '1-88923261-A-C', genomes = "GRCh38")
+#' }
+#'
+#' @import ghql
+#' @importFrom glue glue glue_collapse
+#' @importFrom jsonlite fromJSON
+#' @export
+
+getVariantPopData <- function(varids, genomes) {
+  stopifnot(validGenomes(genomes))
+  gmCon <- GraphqlClient$new(url = apiUrl())
+  datasets <- getDatasets(genomes)
+  tmp <-
+    '
+    {genomes}_{gsub("-", "_", varids)}:
+    variant(variantId: "{varids}", dataset: {datasets}) {{
+      variantId
+      chrom
+      pos
+      genome {{
+        populations {{
+          id
+          ac
+          an
+          homozygote_count
+          hemizygote_count
+        }}
+      }}
+    }}
+  '
+  qryBody <- glue_collapse(glue(tmp), sep = "\n")
+  qry <- Query$new()$query('convertIds',
+                           glue('query convertIds {{ {qryBody} }}'))
+  tryres <- try(jsn <- gmCon$exec(qry$convertIds), silent = TRUE)
+  if (is(tryres, 'try-error')) stop(qfailmessage)
+  resLst <- fromJSON(jsn, flatten = TRUE)$data
+  procPopData <- function(x) {
+    cbind(varid = x$variantId,
+          chrom = x$chrom,
+          pos = x$pos,
+          x$genome$populations)
+  }
+  res <- lapply(resLst, procPopData)
+  res
+}
+

@@ -32,6 +32,8 @@ ReferenceGenomeIds <- c("GRCh38", "GRCh37")
 attr(ReferenceGenomeIds, "defDatasetOpt") <-
   glue("gnomadr.{ReferenceGenomeIds}.dataset")
 attr(ReferenceGenomeIds, "defDataset") <- c("gnomad_r3", "gnomad_r2_1")
+attr(ReferenceGenomeIds, "liftoverIdName") <-
+  c("liftover_variant_id", "source_variant_id")
 
 #' @rdname gnomad-ids
 #' @export
@@ -93,4 +95,13 @@ getDatasets <- function(genomes) {
   ds <- mapply(getOption, x = dsopt, default = dsdef, USE.NAMES = FALSE)
   stopifnot(compatibleGenomeDataset(datasets = ds, genomes = genomes))
   ds
+}
+
+#' @rdname gnomad-ids
+#' @inheritParams pkgParams
+#' @export
+
+getLiftoverIdName <- function(genomes) {
+  stopifnot(validGenomes(genomes))
+  attr(ReferenceGenomeIds, "liftoverIdName")[match(genomes, ReferenceGenomeIds)]
 }

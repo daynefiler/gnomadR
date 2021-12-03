@@ -26,5 +26,7 @@ NULL
 #' @param starts Integer, starting position(s)
 #' @param start Integer scalar, starting position
 #' @param stop Integer scalar, ending position
+#' @param varid Charactter scalar, gnomAD variant_id
+#' @param varids Character, gnomAD variant_id(s)
 #'
 NULL

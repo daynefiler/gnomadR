@@ -23,8 +23,8 @@ region(s).
 \examples{
 \dontrun{
 getVariantsFromRegion(genomes = 'GRCh37',
-                      chroms = c('1', '1'),
-                      starts = c(89388944, 233448413))
+                      chroms = c('1'),
+                      starts = c(89388944))
 }
 
 }

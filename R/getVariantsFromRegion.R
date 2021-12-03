@@ -24,7 +24,8 @@ getVariantsFromRegion <- function(genomes, chroms, starts, stops = starts) {
   datasets <- getDatasets(genomes)
   tmp <-
   '
-  {genomes}_{chroms}_{starts}_{stops}: region(chrom: "{chroms}",
+    {genomes}_{chroms}_{starts}_{stops}:
+    region(chrom: "{chroms}",
            start: {starts},
            stop: {stops},
            reference_genome: {genomes}) {{

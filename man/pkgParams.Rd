@@ -21,6 +21,10 @@
 \item{start}{Integer scalar, starting position}
 
 \item{stop}{Integer scalar, ending position}
+
+\item{varid}{Charactter scalar, gnomAD variant_id}
+
+\item{varids}{Character, gnomAD variant_id(s)}
 }
 \description{
 Common function parameters

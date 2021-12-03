@@ -10,6 +10,7 @@
 \alias{compatibleGenomeDataset}
 \alias{getGenomes}
 \alias{getDatasets}
+\alias{getLiftoverIdName}
 \title{gnomAD IDs and associated helper functions}
 \format{
 An object of class \code{character} of length 2.
@@ -30,6 +31,8 @@ compatibleGenomeDataset(datasets, genomes)
 getGenomes(datasets)
 
 getDatasets(genomes)
+
+getLiftoverIdName(genomes)
 }
 \arguments{
 \item{genomes}{Character, gnomAD ReferenceGenomeId(s)}
