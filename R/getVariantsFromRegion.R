@@ -38,7 +38,7 @@ getVariantsFromRegion <- function(genomes, chroms, starts, stops = starts) {
     }}
   '
   rsp <- .makeAndEvalQuery(qfmt, environment())
-  if (is(rsp, 'try-error')) return(rsp)
+  if (is(rsp, 'failedQuery')) return(rsp)
   res <- lapply(fromJSON(rsp)$data, "[[", 1)
   res
 }

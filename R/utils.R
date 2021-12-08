@@ -112,7 +112,7 @@ getLiftoverIdName <- function(genomes) {
 .makeAndEvalQuery <- function(qfmt, genv, maxTries = 3) {
   gmCon <- GraphqlClient$new(url = apiUrl())
   qryBody <- glue_collapse(glue(qfmt, .envir = genv), sep = "\n")
-  qry <- Query$new()$query('q', glue('query {{ {qryBody} }}'))
+  qry <- Query$new()$query('q', glue('query {{\n{qryBody}\n}}'))
   tries <- 1
   repeat {
     if (tries > maxTries) break
@@ -121,5 +121,18 @@ getLiftoverIdName <- function(genomes) {
     Sys.sleep(2*tries)
     tries <- tries + 1
   }
+  if (is(tryres, 'try-error')) {
+    tryres <- list(errorMessage = tryres[1], query = qry$q$query)
+    class(tryres) <- "failedQuery"
+  }
   tryres
 }
+
+#' @import crayon
+#' @export
+
+print.failedQuery <- function(x) {
+  cat("Query failed with the following message:\n" %+% red(x$errorMessage))
+  cat("Query string (stored as x$query):\n" %+% cyan(x$query))
+}
+

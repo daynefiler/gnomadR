@@ -33,7 +33,7 @@ convertVariantIds <- function(varids, genomes) {
     }}
   '
   rsp <- .makeAndEvalQuery(qfmt, environment())
-  if (is(rsp, 'try-error')) return(rsp)
+  if (is(rsp, 'failedQuery')) return(rsp)
   res <- fromJSON(rsp, flatten = TRUE)$data
   res
 }

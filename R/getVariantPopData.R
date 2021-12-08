@@ -39,7 +39,7 @@ getVariantPopData <- function(varids, genomes) {
     }}
   '
   rsp <- .makeAndEvalQuery(qfmt, environment())
-  if (is(rsp, 'try-error')) return(rsp)
+  if (is(rsp, 'failedQuery')) return(rsp)
   resLst <- fromJSON(rsp, flatten = TRUE)$data
   procPopData <- function(x) {
     cbind(varid = x$variantId,
