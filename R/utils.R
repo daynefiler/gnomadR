@@ -10,12 +10,6 @@ apiUrl <- function() {
   getOption("gnomadr.apiurl", "https://gnomad.broadinstitute.org/api")
 }
 
-qfailmessage <-
-  c("Query failed. This is likely due to the size of the query. At this time ",
-    "the gnomAD API has very low query limits. This package is designed to ",
-    "accomodate large queries in the event gnomAD increases query limits in ",
-    "the future.")
-
 #' @name gnomad-ids
 #' @title gnomAD IDs and associated helper functions
 #' @title Validate/associate reference genome build ID and gnomAD data set ID
